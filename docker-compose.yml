@@ -1,0 +1,24 @@
+services:
+  docker-deployment:
+    image: ghcr.io/developer-hub-community/docker-deployment:latest
+    container_name: docker-deployment
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.docker-deployment.rule=Host(`docker-deployment.developer-hub.com`)"
+      - "traefik.http.routers.docker-deployment.entrypoints=websecure"
+      - "traefik.http.routers.docker-deployment.tls.certresolver=myresolver"
+      - "traefik.http.services.docker-deployment.loadbalancer.server.port=3000"
+    networks:
+      - traefik_default
+    restart: on-failure:3
+
+networks:
+  traefik_default:
+    external: true
