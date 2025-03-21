@@ -8,6 +8,8 @@ services:
       retries: 3
       start_period: 10s
       timeout: 5s
+    ports:
+      - "3000:3000"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
